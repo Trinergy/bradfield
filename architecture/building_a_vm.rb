@@ -1,3 +1,5 @@
+require "pry"
+
 # 02/04/2019 - Building a VM to understand the fetch, decode, execute cycle
 
 program = [
@@ -36,20 +38,28 @@ while pc < program.length && !halt do
   when INSTRUCTIONS["LOAD"]
     register_address = program[pc+1]
     memory_address = program[pc+2]
-    memory_value = program.fetch(memory_address)
 
-    registers.store(register_address, memory_value)
+    # Value conversion for 2-byte word little endian VM
+    memory_value1 = program.fetch(memory_address)
+    memory_value2 = program.fetch(memory_address+1) * 256
 
-    puts "=== LOAD memory_value: #{memory_value} at memory_address: #{memory_address} to register_address: #{register_address} ==="
+    registers.store(register_address, memory_value1 + memory_value2)
+
+    puts "=== LOAD memory_value: #{memory_value1} + #{memory_value2} at memory_address: #{memory_address} to register_address: #{register_address} ==="
     pc = pc + 3
   when INSTRUCTIONS["STORE"]
     register_address = program[pc+1]
     register_value = registers.fetch(register_address)
+    
+    # Value conversion for 2-byte word little endian VM
+    memory_address1 = program[pc+2]
+    memory_address2 = memory_address1 + 1
+    least_significant_byte = register_value % 256 # sprintf("0x%.2x", n) for hex print
+    most_significant_byte = register_value / 256
+    program[memory_address1] = least_significant_byte
+    program[memory_address2] = most_significant_byte
 
-    memory_address = program[pc+2]
-    program[memory_address] = register_value
-
-    puts "=== STORE register_value: #{register_value} at register_address: #{register_address} to memory_address: #{memory_address} ==="
+    puts "=== STORE register_value: #{register_value} at register_address: #{register_address} to memory_address1(LSB): #{memory_address1} with  and memory_address2(MSB): #{memory_address2} ==="
     pc = pc + 3
   when INSTRUCTIONS["ADD"]
     register1_address = program[pc+1]
