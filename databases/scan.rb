@@ -31,3 +31,8 @@ class Scan
     # clean-up
   end
 end
+
+require './select'
+s = Scan.new('./movies_small.csv')
+clause = "WHERE title='Toy Story (1995)'"
+binding.pry
