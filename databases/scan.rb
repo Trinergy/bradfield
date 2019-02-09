@@ -1,30 +1,21 @@
 require 'csv'
 require 'pry'
+require './select'
 
 class Scan
   attr_reader :csv_path
-  attr_accessor :data, :row_index
-  
+  attr_accessor :buffer
+
   def initialize(csv_path)
     @csv_path = csv_path
-    @data = []
-    @row_index = 0
-  end
-
-  def call
-    @data = CSV.read(csv_path)
-  end
-
-  def hasNext
-    !data[row_index].nil?
+    @buffer = nil
   end
 
   def next
-    return if !hasNext
+    return @buffer.shift if @buffer
 
-    nextRow = data[row_index]
-    @row_index = row_index + 1
-    nextRow
+    @buffer = CSV.open(csv_path)
+    @buffer.shift
   end
 
   def close
@@ -32,7 +23,7 @@ class Scan
   end
 end
 
-require './select'
 s = Scan.new('./movies_small.csv')
-clause = "WHERE title='Toy Story (1995)'"
+x = Select.new(s, 1, "Toy Story (1995)")
+
 binding.pry
