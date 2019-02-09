@@ -1,0 +1,10 @@
+# DATABASE
+*.csv
+/databases/ml-20m/*
+
+# Architecture
+/architecture/data-encoding-exercise/*
+
+# Operating Systems
+/os/program-structure-exercise/*
+/os/*.pdf
