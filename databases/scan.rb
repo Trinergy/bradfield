@@ -1,29 +1,22 @@
 require 'csv'
-require 'pry'
-require './select'
 
 class Scan
-  attr_reader :csv_path
-  attr_accessor :buffer
+  attr_reader :buffer, :csv_path, :with_header, :initial_run
 
-  def initialize(csv_path)
+  def initialize(csv_path, with_header=true, initial_run=true)
     @csv_path = csv_path
     @buffer = nil
+    @with_header = with_header
+    @initial_run = initial_run
   end
 
   def next
-    return @buffer.shift if @buffer
+    if initial_run
+      @buffer = CSV.open(csv_path) 
+      buffer.shift if buffer && with_header && initial_run
+      @initial_run = false
+    end
 
-    @buffer = CSV.open(csv_path)
-    @buffer.shift
-  end
-
-  def close
-    # clean-up
+    buffer.shift
   end
 end
-
-s = Scan.new('./movies_small.csv')
-x = Select.new(s, 1, "Toy Story (1995)")
-
-binding.pry
