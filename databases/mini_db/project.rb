@@ -10,12 +10,13 @@ class Project
   def next
     row = child_node.next
 
-    return @output if row.nil?
+    return if row.nil?
 
     output_row = []
 
     columns.each { |c| output_row << row[c] }
 
     @output << output_row
+    pp output_row
   end
 end

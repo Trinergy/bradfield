@@ -1,18 +1,52 @@
-require './project'
-require './scan'
-require './select'
+# SINGLE TABLE QUERIES ONLY ATM
+class Executor
+  attr_reader :query_plan, :root_node, :nodes_buffer, :initial_run, :i
 
-# DEV
-require 'pry'
+  def initialize(query_plan)
+    @query_plan = query_plan
+    @nodes_buffer = []
+    @initial_run = true
+    @i = 0 # Need metadata to determine number of executions
+  end
 
-MOVIE_COLUMNS = {
-  id: 0,
-  title: 1,
-  genres: 2
-}
+  def build
+    if initial_run
+      scan_node = initialize_scan_node(query_plan.pop)
+      @nodes_buffer << scan_node
+      @initial_run = false
+    end
+    
+    query_plan.reverse_each do |node_plan|
+      child_node = nodes_buffer.pop
+      @nodes_buffer << initialize_node(node_plan[0],child_node, node_plan[1])
+    end
+  end
 
-scan = Scan.new('../ml-20m/movies.csv')
-sel = Select.new(scan, MOVIE_COLUMNS[:title], 'Toy Story (1995)')
-p = Project.new(sel, [MOVIE_COLUMNS[:id], MOVIE_COLUMNS[:title]])
+  def call
+    root_node = nodes_buffer[0]
 
-binding.pry
+    while @i < 50000 # hard-coded
+      root_node.next
+      @i = @i + 1
+    end
+  end
+
+  private
+  
+  def initialize_scan_node(node_plan)
+    klass = Object.const_get(node_plan[0].capitalize)
+    klass.new(node_plan[1][0])
+  end
+
+  def initialize_node(node,child_node, args)
+    klass = node.capitalize
+    case klass
+    when 'Select'
+      Object.const_get(klass).new(child_node, args[0], args[1])
+    when 'Project'
+      Object.const_get(klass).new(child_node, args)
+    else
+      "NOPE"
+    end
+  end
+end
