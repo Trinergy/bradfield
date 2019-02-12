@@ -25,9 +25,7 @@ class Executor
   def call
     root_node = nodes_buffer[0]
 
-    while @i < 50000 # hard-coded
-      root_node.next
-      @i = @i + 1
+    while root_node.next != "EOF" do
     end
   end
 

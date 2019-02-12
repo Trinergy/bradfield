@@ -11,6 +11,7 @@ class Project
     row = child_node.next
 
     return if row.nil?
+    return "EOF" if row == "EOF"
 
     output_row = []
 

@@ -17,6 +17,8 @@ class Scan
       @initial_run = false
     end
 
+    return "EOF" if buffer.eof?
+
     buffer.shift
   end
 end

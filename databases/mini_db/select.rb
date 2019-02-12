@@ -9,7 +9,7 @@ class Select
 
   def next
     row = child_node.next
-    return if row.nil?
+    return "EOF" if row == "EOF"
 
     return row if row[column_index] == value
   end

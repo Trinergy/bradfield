@@ -12,16 +12,17 @@ MOVIE_COLUMNS = {
   genres: 2
 }
 
-scan = Scan.new('../ml-20m/movies.csv')
-sel = Select.new(scan, MOVIE_COLUMNS[:title], 'Toy Story (1995)')
+scan = Scan.new('./movies_small.csv')
+sel = Select.new(scan, MOVIE_COLUMNS[:title], 'Grumpier Old Men (1995)')
 p = Project.new(sel, [MOVIE_COLUMNS[:id], MOVIE_COLUMNS[:title]])
 
 query_plan = [
   ['PROJECT', [MOVIE_COLUMNS[:title]]],
-  ['SELECT', [MOVIE_COLUMNS[:id], '5000']],
-  ['SCAN', ['../ml-20m/movies.csv']]
+  ['SELECT', [MOVIE_COLUMNS[:id], '4']],
+  ['SCAN', ['./movies_small.csv']]
 ]
 
 e = Executor.new(query_plan)
 e.build
-e.call
+# e.call
+binding.pry
