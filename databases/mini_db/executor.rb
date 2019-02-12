@@ -1,12 +1,11 @@
 # SINGLE TABLE QUERIES ONLY ATM
 class Executor
-  attr_reader :query_plan, :root_node, :nodes_buffer, :initial_run, :i
+  attr_reader :query_plan, :root_node, :nodes_buffer, :initial_run
 
   def initialize(query_plan)
     @query_plan = query_plan
     @nodes_buffer = []
     @initial_run = true
-    @i = 0 # Need metadata to determine number of executions
   end
 
   def build
