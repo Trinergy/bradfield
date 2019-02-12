@@ -40,7 +40,7 @@ class Executor
     klass = node.capitalize
     case klass
     when 'Select'
-      Object.const_get(klass).new(child_node, args[0], args[1])
+      Object.const_get(klass).new(child_node, args[0], args[1], args[2])
     when 'Project'
       Object.const_get(klass).new(child_node, args)
     else
