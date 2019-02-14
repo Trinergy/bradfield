@@ -1,5 +1,3 @@
-# Sort does not return EOF (may need to revise)
-
 class Sort
   attr_reader :buffer, :child_node, :order, :complete, :column_index
 
@@ -26,7 +24,7 @@ class Sort
 
       @buffer << row if !row.nil?
     end
-    
+
     return "EOF" if buffer.empty?
 
     buffer.shift
