@@ -1,7 +1,8 @@
+require './distinct'
+require './executor'
 require './project'
 require './scan'
 require './select'
-require './executor'
 require './sort'
 
 # DEV
@@ -14,7 +15,8 @@ MOVIE_COLUMNS = {
 }
 
 scan = Scan.new('./movies_small.csv')
-sort = Sort.new(scan, MOVIE_COLUMNS[:title])
+sort = Sort.new(scan, MOVIE_COLUMNS[:title], 'DESC')
+distinct = Distinct.new(sort)
 sel = Select.new(scan, MOVIE_COLUMNS[:title], 'EQUAL', 'Grumpier Old Men (1995)')
 p = Project.new(sel, [MOVIE_COLUMNS[:id], MOVIE_COLUMNS[:title]])
 
@@ -27,3 +29,5 @@ query_plan = [
 e = Executor.new(query_plan)
 e.build
 e.call
+
+binding.pry
