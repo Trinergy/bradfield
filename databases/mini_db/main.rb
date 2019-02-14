@@ -2,6 +2,7 @@ require './project'
 require './scan'
 require './select'
 require './executor'
+require './sort'
 
 # DEV
 require 'pry'
@@ -13,6 +14,7 @@ MOVIE_COLUMNS = {
 }
 
 scan = Scan.new('./movies_small.csv')
+sort = Sort.new(scan, MOVIE_COLUMNS[:title])
 sel = Select.new(scan, MOVIE_COLUMNS[:title], 'EQUAL', 'Grumpier Old Men (1995)')
 p = Project.new(sel, [MOVIE_COLUMNS[:id], MOVIE_COLUMNS[:title]])
 
