@@ -1,5 +1,6 @@
 require './distinct'
 require './executor'
+require './limit'
 require './project'
 require './scan'
 require './select'
@@ -19,6 +20,11 @@ sort = Sort.new(scan, MOVIE_COLUMNS[:title], 'DESC')
 distinct = Distinct.new(sort)
 sel = Select.new(scan, MOVIE_COLUMNS[:title], 'EQUAL', 'Grumpier Old Men (1995)')
 p = Project.new(sel, [MOVIE_COLUMNS[:id], MOVIE_COLUMNS[:title]])
+
+scan2 = Scan.new('./movies_small.csv')
+limit = Limit.new(scan, 4)
+p2 = Project.new(limit, [MOVIE_COLUMNS[:id], MOVIE_COLUMNS[:title]])
+
 
 query_plan = [
   ['PROJECT', [MOVIE_COLUMNS[:title]]],
