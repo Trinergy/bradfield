@@ -5,7 +5,7 @@ while true do
 
   command = gets
 
-  case command
+  case command.strip
   when nil # Any signal
     puts "\nShe sells sea shells by the sea shore"
     exit
