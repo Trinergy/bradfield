@@ -4,6 +4,7 @@
 
 # Architecture
 /architecture/data-encoding-exercise/*
+/architecture/*.out
 
 # Operating Systems
 /os/program-structure-exercise/*
