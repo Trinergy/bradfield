@@ -1,21 +1,37 @@
 require 'pry'
 
-while true do
+def get_command
   print "🐚 conch_shell: "
 
-  command = gets
+  gets.strip
+end
 
-  case command.strip
-  when nil # Any signal
-    puts "\nShe sells sea shells by the sea shore"
+
+def fork_command(command)
+  if command == 'exit'
+    puts 'She sells sea shells by the sea shore - goodbye'
     exit
-  when 'whoami'
-    Process.exec('whoami')
-  when 'ls'
-    Process.exec('ls')
-  when 'pwd'
-    Process.exec('pwd')
-  else
-    puts "🍄 " + command.gsub("\n", '') + ": command not found"
   end
+
+  pid = fork do
+    Signal.trap('SIGINT') do
+      puts "SIGINT - exiting child for command: #{command}"
+      exit
+    end
+    system(command)
+  end
+
+  # pass signal to child
+  Signal.trap('SIGINT') do 
+    Process.kill 'SIGINT', pid
+  end
+
+  Process.wait
+  pid
+end
+
+
+loop do
+  c = get_command
+  fork_command(c)
 end
